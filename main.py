@@ -1,5 +1,5 @@
 import pygame
-import random
+from random import *
 
 WIDTH = 360
 HEIGHT = 480
@@ -19,6 +19,7 @@ clock = pygame.time.Clock()
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        self.lives = 3
         self.image = pygame.transform.scale(player_img, (25, 40))
         self.rect = self.image.get_rect()
         self.rect.centerx = WIDTH / 2
@@ -56,19 +57,20 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(player_img, (30, 30))
+        size = randint(20, 50)
+        self.image = pygame.transform.scale(choice(mob_images), (size, size))
         self.rect = self.image.get_rect()
-        self.rect.centerx = random.randint(0, WIDTH)
+        self.rect.centerx = randint(0, WIDTH)
         self.rect.top = -10
-        self.speedx = random.randint(-3, 3)
-        self.speedy = random.randint(1, 7)
+        self.speedx = randint(-3, 3)
+        self.speedy = randint(1, 7)
 
     def update(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
         if self.rect.right >= WIDTH + 30 or self.rect.left <= -30 or self.rect.bottom >= HEIGHT + 30:
-            self.rect.centerx = random.randint(0, WIDTH)
+            self.rect.centerx = randint(0, WIDTH)
             self.rect.top = -10
 
 
@@ -86,12 +88,32 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+    class Lives(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+
+
+        def update(self):
+
 
 player_img = pygame.image.load('img/space_shooter_pic.png')
+mob_images = [
+    pygame.image.load('img/meteor_big_00.png'),
+    pygame.image.load('img/meteor_medium_00.png'),
+    pygame.image.load('img/meteor_small_00.png')
+]
+lives_img = pygame.image.load('img/png-transparent-minecraft-video-game-health-game-result-thumbnail-removebg-preview.png')
+
 all_sprites = pygame.sprite.Group()
 player = Player()
-all_sprites.add(player)
+lives = Lives()
+all_sprites.add(player, lives)
 mobs = pygame.sprite.Group()
+
+image = pygame.transform.scale(player_img, (20, 20))
+rect = image.get_rect()
+rect.x = 10
+rect.y = 10
 
 for i in range(8):
     m = Mob()
@@ -107,8 +129,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    hits = pygame.sprite.spritecollide(player, mobs, False)
+    hits = pygame.sprite.spritecollide(player, mobs, True)
     if hits:
+        player.lives -= 1
+
+    if player.lives == 0:
         running = False
 
     screen.fill(BLACK)

@@ -121,7 +121,7 @@ for i in range(8):
     mobs.add(m)
 
 running = True
-
+# main loop
 while running:
     clock.tick(FPS)
 

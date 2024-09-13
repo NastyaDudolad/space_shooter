@@ -79,6 +79,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10, 20))
         self.image.fill(RED)
+        self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = -10
         self.speedy = -10
@@ -88,12 +89,14 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
-    class Lives(pygame.sprite.Sprite):
-        def __init__(self):
-            pygame.sprite.Sprite.__init__(self)
 
-
-        def update(self):
+class Heart(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(lives_img, (20, 20))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 player_img = pygame.image.load('img/space_shooter_pic.png')
@@ -102,18 +105,13 @@ mob_images = [
     pygame.image.load('img/meteor_medium_00.png'),
     pygame.image.load('img/meteor_small_00.png')
 ]
-lives_img = pygame.image.load('img/png-transparent-minecraft-video-game-health-game-result-thumbnail-removebg-preview.png')
+lives_img = pygame.image.load(
+    'img/png-transparent-minecraft-video-game-health-game-result-thumbnail-removebg-preview.png')
 
 all_sprites = pygame.sprite.Group()
 player = Player()
-lives = Lives()
-all_sprites.add(player, lives)
+all_sprites.add(player)
 mobs = pygame.sprite.Group()
-
-image = pygame.transform.scale(player_img, (20, 20))
-rect = image.get_rect()
-rect.x = 10
-rect.y = 10
 
 for i in range(8):
     m = Mob()
@@ -121,7 +119,21 @@ for i in range(8):
     mobs.add(m)
 
 running = True
-# main loop
+hearts = []
+
+
+def spawn_hearts():
+    player_lives = player.lives
+    pos_x = 10
+    for j in range(player_lives):
+        pos_x += 20
+        heart = Heart(pos_x, 10)
+        hearts.append(heart)
+        if isinstance(heart, Heart):
+            all_sprites.add(heart)
+
+
+spawn_hearts()
 while running:
     clock.tick(FPS)
 
@@ -130,8 +142,12 @@ while running:
             running = False
 
     hits = pygame.sprite.spritecollide(player, mobs, True)
+
     if hits:
         player.lives -= 1
+        all_sprites.remove(hearts)
+        hearts = []
+        spawn_hearts()
 
     if player.lives == 0:
         running = False

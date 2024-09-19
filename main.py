@@ -159,7 +159,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 player.shoot()
 
-    # Зіткення гравця з метеоритом
+    # player and meteorite collision
     hits = pygame.sprite.spritecollide(player, mobs, True)
 
     if hits:

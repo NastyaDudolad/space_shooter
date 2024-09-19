@@ -15,6 +15,14 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('My game')
 clock = pygame.time.Clock()
 
+# Sounds
+pygame.mixer.init()
+main_sound = pygame.mixer.Sound('sounds/main_FrozenJam_song.ogg')
+main_sound.set_volume(0.1)
+main_sound.play()
+pew_sound = pygame.mixer.Sound('sounds/pew.wav')
+main_sound.set_volume(0.1)
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -57,6 +65,9 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
+        pew_sound.play()
+
+
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -148,7 +159,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 player.shoot()
 
-    #Зіткення гравця з метеоритом
+    # Зіткення гравця з метеоритом
     hits = pygame.sprite.spritecollide(player, mobs, True)
 
     if hits:

@@ -53,7 +53,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.top)
+        all_sprites.add(bullet)
+        bullets.add(bullet)
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -77,11 +80,11 @@ class Mob(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
+        self.image = pygame.Surface((5, 20))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.bottom = y
-        self.rect.centerx = -10
+        self.rect.centerx = x
         self.speedy = -10
 
     def update(self):
@@ -112,6 +115,7 @@ all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 mobs = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 for i in range(8):
     m = Mob()
@@ -140,7 +144,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                player.shoot()
 
+    #Зіткення гравця з метеоритом
     hits = pygame.sprite.spritecollide(player, mobs, True)
 
     if hits:
@@ -151,6 +159,12 @@ while running:
 
     if player.lives == 0:
         running = False
+
+    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+    for hit in hits:
+        m = Mob()
+        all_sprites.add(m)
+        mobs.add(m)
 
     screen.fill(BLACK)
     all_sprites.update()

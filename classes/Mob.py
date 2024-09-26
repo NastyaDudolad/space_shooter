@@ -1,6 +1,7 @@
 import pygame
 from random import *
 
+
 class Mob(pygame.sprite.Sprite):
     def __init__(self, mob_images, WIDTH, HEIGHT):
         self.width = WIDTH
@@ -18,6 +19,6 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-        if self.rect.right >=  self.width + 30 or self.rect.left <= -30 or self.rect.bottom >= self.height + 30:
-            self.rect.centerx = randint(0,  self.width)
+        if self.rect.right >= self.width + 30 or self.rect.left <= -30 or self.rect.bottom >= self.height + 30:
+            self.rect.centerx = randint(0, self.width)
             self.rect.top = -10

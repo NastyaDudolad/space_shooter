@@ -1,7 +1,5 @@
 import pygame
-from random import *
 from classes.Heart import Heart
-from classes.Bullet import Bullet
 from classes.Mob import Mob
 from classes.Player import Player
 
@@ -37,10 +35,10 @@ lives_img = pygame.image.load(
     'img/png-transparent-minecraft-video-game-health-game-result-thumbnail-removebg-preview.png')
 
 all_sprites = pygame.sprite.Group()
-player = Player()
+bullets = pygame.sprite.Group()
+player = Player(WIDTH, HEIGHT, player_img, all_sprites, bullets, pew_sound)
 all_sprites.add(player)
 mobs = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
 
 for i in range(8):
     m = Mob(mob_images, WIDTH, HEIGHT)
@@ -87,7 +85,7 @@ while running:
 
     hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
     for hit in hits:
-        m = Mob()
+        m = Mob(mob_images, WIDTH, HEIGHT)
         all_sprites.add(m)
         mobs.add(m)
 

@@ -1,7 +1,21 @@
 import pygame
+from classes.Bullet import Bullet
+
+all_sprites = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
+RED = (255, 0, 0)
+WIDTH = 360
+HEIGHT = 480
+
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, WIDTH, HEIGHT, player_img, all_sprites, bullets, pew_sound):
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.all_sprites = all_sprites
+        self.pew_sound = pew_sound
+        self.bullets = bullets
         pygame.sprite.Sprite.__init__(self)
         self.lives = 3
         self.image = pygame.transform.scale(player_img, (25, 40))
@@ -39,6 +53,6 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top, RED)
-        all_sprites.add(bullet)
-        bullets.add(bullet)
-        pew_sound.play()
+        self.all_sprites.add(bullet)
+        self.bullets.add(bullet)
+        self.pew_sound.play()
